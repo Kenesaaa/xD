@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Explosion</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffe6e6;
+            font-family: 'Arial', sans-serif;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            z-index: 100;
+            transition: opacity 1s;
+        }
+        
+        .message {
+            font-size: 24px;
+            line-height: 1.6;
+            color: #333;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s, transform 1s;
+            margin-bottom: 15px;
+        }
+        
+        .message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .click-here {
+            font-size: 20px;
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-top: 30px;
+            text-decoration: underline;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+        
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: float linear forwards;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            to {
+                transform: translate(var(--endX), var(--endY)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <div class="message" id="line1">I want to say</div>
+        <div class="message" id="line2">many things but,</div>
+        <div class="message" id="line3">I can't express so I made</div>
+        <div class="message" id="line4">this for you</div>
+        <div class="click-here" id="clickHere">Click here</div>
+    </div>
+
+    <script>
+        document.getElementById('clickHere').addEventListener('click', function() {
+            const container = document.getElementById('mainContainer');
+            
+            // Хабарды көрсету
+            setTimeout(() => document.getElementById('line1').classList.add('visible'), 500);
+            setTimeout(() => document.getElementById('line2').classList.add('visible'), 1500);
+            setTimeout(() => document.getElementById('line3').classList.add('visible'), 2500);
+            setTimeout(() => document.getElementById('line4').classList.add('visible'), 3500);
+            
+            // 4 секундтан кейін жүректерді шығару
+            setTimeout(() => {
+                this.style.display = 'none';
+                createHeartExplosion();
+                
+                // Негізгі контейнерді бұлдырмалау
+                setTimeout(() => {
+                    container.style.opacity = '0.2';
+                }, 1000);
+            }, 4500);
+        });
+        
+        function createHeartExplosion() {
+            const colors = ['#ff0000', '#ff69b4', '#ff1493', '#db7093'];
+            const heartCount = 300; // Жүректер саны
+            
+            for(let i = 0; i < heartCount; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    
+                    // Бастапқы позиция (экран ортасы)
+                    const startX = window.innerWidth / 2;
+                    const startY = window.innerHeight / 2;
+                    
+                    // Кездейсоқ аяқталу позициясы
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * Math.max(window.innerWidth, window.innerHeight);
+                    const endX = Math.cos(angle) * distance;
+                    const endY = Math.sin(angle) * distance;
+                    
+                    // Кездейсоқ өлшем
+                    const size = Math.random() * 20 + 10;
+                    
+                    // CSS қасиеттерін орнату
+                    heart.style.left = `${startX}px`;
+                    heart.style.top = `${startY}px`;
+                    heart.style.width = `${size}px`;
+                    heart.style.height = `${size}px`;
+                    heart.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    heart.style.borderRadius = '50%';
+                    heart.style.setProperty('--endX', `${endX}px`);
+                    heart.style.setProperty('--endY', `${-endY}px`);
+                    heart.style.animationDuration = `${Math.random() * 2 + 2}s`;
+                    
+                    // Жүрек формасы
+                    heart.innerHTML = '❤️';
+                    heart.style.fontSize = `${size}px`;
+                    heart.style.lineHeight = `${size}px`;
+                    heart.style.textAlign = 'center';
+                    
+                    document.body.appendChild(heart);
+                    
+                    // Анимация аяқталғаннан кейін жою
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 3000);
+                }, Math.random() * 1000);
+            }
+            
+            // Жаңа жүректерді үздіксіз шығару
+            setInterval(() => {
+                if(Math.random() > 0.7) {
+                    createFloatingHeart();
+                }
+            }, 300);
+        }
+        
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            
+            // Кездейсоқ бастапқы позиция (экран асты)
+            const startX = Math.random() * window.innerWidth;
+            const startY = window.innerHeight + 50;
+            
+            // Кездейсоқ аяқталу позициясы (жоғары)
+            const endX = (Math.random() - 0.5) * 200;
+            const endY = -window.innerHeight - 100;
+            
+            // Кездейсоқ өлшем
+            const size = Math.random() * 20 + 10;
+            const colors = ['#ff0000', '#ff69b4', '#ff1493', '#db7093'];
+            
+            // CSS қасиеттерін орнату
+            heart.style.left = `${startX}px`;
+            heart.style.top = `${startY}px`;
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+            heart.style.setProperty('--endX', `${endX}px`);
+            heart.style.setProperty('--endY', `${endY}px`);
+            heart.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            
+            // Жүрек формасы
+            heart.innerHTML = '❤️';
+            heart.style.fontSize = `${size}px`;
+            heart.style.lineHeight = `${size}px`;
+            heart.style.textAlign = 'center';
+            
+            document.body.appendChild(heart);
+            
+            // Анимация аяқталғаннан кейін жою
+            setTimeout(() => {
+                heart.remove();
+            }, 8000);
+        }
+    </script>
+</body>
+</html>
